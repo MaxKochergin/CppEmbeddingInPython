@@ -27,6 +27,13 @@
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.10" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CPythonEmbedding\CPythonEmbedding.vcxproj">
+      <Name>CPythonEmbedding</Name>
+      <Project>{0ecab60d-1646-4634-b66b-dcd6e8dc842d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in
