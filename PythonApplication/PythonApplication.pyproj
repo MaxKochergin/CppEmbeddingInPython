@@ -33,6 +33,11 @@
       <Project>{0ecab60d-1646-4634-b66b-dcd6e8dc842d}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\PybindEmbedding\PybindEmbedding.vcxproj">
+      <Name>PybindEmbedding</Name>
+      <Project>{5429569a-57e0-4baf-ba41-da29b090b2c9}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

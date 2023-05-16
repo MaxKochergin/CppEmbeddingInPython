@@ -1,9 +1,14 @@
 #based on:
 #https://learn.microsoft.com/ru-ru/visualstudio/python/working-with-c-cpp-python-in-visual-studio?view=vs-2019
+# additional for Pybind:
+# https://www.matecdev.com/posts/cpp-call-from-python.html
+# and
+# https://smyt.ru/blog/sozdaem-s-python-rasshireniya-s-pomshyu-pybind11/
 
 from random import random
 from time import perf_counter
 from CPythonEmbedding import fast_tanh
+from PybindEmbedding import MathCalc
 
 COUNT = 500000  # Change this value depending on the speed of your computer
 DATA = [(random() - 0.5) * 3 for _ in range(COUNT)]
@@ -34,7 +39,10 @@ def test(fn, name):
 # Main
 if __name__ == "__main__":
     print('Running benchmarks with COUNT = {}'.format(COUNT))
-
+    #Native
     test(lambda d: [tanh(x) for x in d], 'Evaluation of tanh 500 000 times (Python native implementation)')
-
+    #CPython
     test(lambda d: [fast_tanh(x) for x in d], 'Evaluation of tanh 500 000 times (CPython C++ extension)')
+    #Pybind
+    pbObj = MathCalc()
+    test(lambda d: [pbObj.tanh_impl(x) for x in d], 'Evaluation of tanh 500 000 times] (PyBind11 C++ extension)')
