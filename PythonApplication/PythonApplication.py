@@ -46,3 +46,6 @@ if __name__ == "__main__":
     #Pybind
     pbObj = MathCalc()
     test(lambda d: [pbObj.tanh_impl(x) for x in d], 'Evaluation of tanh 500 000 times] (PyBind11 C++ extension)')
+
+    import os
+    os.system("pause")

@@ -12,6 +12,8 @@
     <Name>PythonApplication</Name>
     <RootNamespace>PythonApplication</RootNamespace>
     <InterpreterId>Global|PythonCore|3.10</InterpreterId>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
