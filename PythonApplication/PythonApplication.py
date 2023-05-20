@@ -42,10 +42,37 @@ if __name__ == "__main__":
     #Native
     test(lambda d: [tanh(x) for x in d], 'Evaluation of tanh 500 000 times (Python native implementation)')
     #CPython
-    test(lambda d: [fast_tanh(x) for x in d], 'Evaluation of tanh 500 000 times (CPython C++ extension)')
+    #test(lambda d: [fast_tanh(x) for x in d], 'Evaluation of tanh 500 000 times (CPython C++ extension)')
     #Pybind
-    pbObj = MathCalc()
-    test(lambda d: [pbObj.tanh_impl(x) for x in d], 'Evaluation of tanh 500 000 times] (PyBind11 C++ extension)')
+    #pbObj = MathCalc()
+    #test(lambda d: [pbObj.tanh_impl(x) for x in d], 'Evaluation of tanh 500 000 times] (PyBind11 C++ extension)')
 
     import os
+    os.system("pause")
+
+    #component test
+    
+    from PybindEmbedding import Component
+    import PybindEmbedding as PE
+
+    component1 = Component()
+    component2 = Component()
+    message1 = PE.Message(1.0,1)
+    print(id(component2), ' : ', id(component2.outputDouble),' - ', component2.outputDouble)
+    #component1.SendMessage(message1,component2)
+    #component2.GetVoidPointer()
+    #component1.SendMessagePy(message1,component2.GetVoidPointer())
+    #component1.SendMessagePy(message1,PE.TransformPyObjectToVoid(component2))
+    #component1.SendMessagePy(message1,component2.CreateCapsule())
+    #a = component2.CreateCapsule()
+    service = PE.Service()
+    service.TestPointer(component2.pSelf)#,component2.pyPointer, component2.pyPointer)
+    service.TestPointerPy(component2)
+    component1.SendMessage(message1,service.VoidToComponent(component2.pSelf))
+    print("+++++++++++++++++++++++++++++++++++++++++++++++")
+    print(id(component2), ' : ', id(component2.outputDouble),' - ', component2.outputDouble)
+
+    #import ctypes
+    #ctypes.byref() 
+
     os.system("pause")
