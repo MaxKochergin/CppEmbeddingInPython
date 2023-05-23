@@ -25,6 +25,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="NativePythonCalc.py" />
     <Compile Include="PythonApplication.py" />
   </ItemGroup>
   <ItemGroup>
