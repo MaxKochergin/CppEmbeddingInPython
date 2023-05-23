@@ -10,15 +10,15 @@ class MessageC
 public:
     void* data;
     messageType dataType;
-    MessageC(float dataIn, messageType dataTypeIn)
+    MessageC(void* data_in, messageType dataType_in)
     {
-        data = &dataIn;
-        dataType = dataTypeIn;
+        data = data_in;
+        dataType = dataType_in;
     }
-    MessageC(float dataIn, int dataTypeInInt)
-    {
-        MessageC(dataIn, (messageType)dataTypeInInt);
-    }
+    //MessageC(float dataIn, int dataTypeInInt)
+    //{
+    //    MessageC(dataIn, (messageType)dataTypeInInt);
+    //}
     MessageC()
     {
         data = nullptr;
@@ -27,78 +27,86 @@ public:
 
 };
 
-void* FloatToVoid(double value)
-{
-    return (void*)&value;
-}
-double* VoidToFloat(void* data)
-{
-    return (double*)data;
-}
-
-void* TransformPyObjectToVoid(PyObject* pyob)
-{
-    return (void*)pyob;
-}
-
-
-
 class Component
 {
 public:
+    std::string name;
     //input types - who knows what will come?
     int inputInt;
     double inputDouble;
-    std::string inputString;
-    //output types - depends on imput type
+    //output types - depends on input type
     int outputInt;
     double outputDouble;
-    std::string outputString;
-    PyObject* pyPointer;
-    void* pSelf;
 
     Component()
     {
-        inputInt = 0; inputDouble = 0; outputInt = 0; outputDouble = 0;
-        pSelf = this;
-        pyPointer = PyLong_FromVoidPtr((void*)this);
-        //pointer = PyCapsule_New(this, NULL, NULL);
+        inputInt = 0; inputDouble = 0; outputInt = 1; outputDouble = 1;
+        name = "-";
     }
-
-    PyObject* CreateCapsule(/*PyObject* self, PyObject* args*/)
+    Component(std::string name_in, int input_in, int output_in)
     {
-        PyObject* PyPointer;
-        //PyPointer = PyCapsule_New((void*)this, NULL, NULL);
-        PyPointer = PyLong_FromVoidPtr((void*)this);
-        return PyPointer;
+        inputInt = input_in; inputDouble = 0; outputInt = output_in; outputDouble = 1;
+        name = name_in;
     }
-
-
-    //void* GetVoidPointer()
+    Component(std::string name_in, double input_in, double output_in)
+    {
+        inputInt = 0; inputDouble = input_in; outputInt = 0; outputDouble = output_in;
+        name = name_in;
+    }
+    Component(std::string name_in)
+    {
+        inputInt = 0; inputDouble = 0; outputInt = 0; outputDouble = 0;
+        name = name_in;
+    }
+    //Component(std::string name_in)
     //{
-    //    return PyCapsule_GetPointer(pointer,NULL);
+    //    inputInt = 0; inputDouble = 0; outputInt = 0; outputDouble = 0;
+    //    name = name_in;
     //}
 
     //sending any data into next component in the circuit
-    void SendMessage(MessageC message, Component* nextComponent)
+    void SendMessage(Component* nextComponent, messageType mType)
     {
-        nextComponent->AcceptMessage(message);
+        MessageC* messageI = new MessageC(&this->outputInt, mType);
+        MessageC* messageD = new MessageC(&this->outputDouble, mType);
+        switch (mType)
+        {
+
+        case integerType:
+
+            nextComponent->AcceptMessage(messageI);
+            break;
+        case floatType:
+
+            nextComponent->AcceptMessage(messageD);
+            break;
+        }
+        delete messageD;
+        delete messageI;
     }
-    void SendMessagePy(MessageC message, PyObject* nextComponentCaps)
+    void SendMessagePy(Component* nextComponent, int mType)
     {
-        void* p = PyCapsule_GetPointer(nextComponentCaps, NULL);
-        Component* p1 = (Component*)p;
-        p1->AcceptMessage(message);
+        SendMessage(nextComponent, (messageType)mType);
     }
+    //void SendMessagePy(MessageC message, PyObject* nextComponentCaps)
+    //{
+    //    void* p = PyCapsule_GetPointer(nextComponentCaps, NULL);
+    //    Component* p1 = (Component*)p;
+    //    p1->AcceptMessage(message);
+    //}
     //processing received any data from previous component in the curcuit
-    void AcceptMessage(MessageC message)
+    void AcceptMessage(MessageC *message)
     {
-        switch (message.dataType)
+        if (message->data == nullptr)
+            throw std::exception("Accepted data is empty");
+        switch (message->dataType)
         {
         case floatType:
+            inputDouble = *(double*)message->data;
             CalculateFloat();
             break;
         case integerType:
+            inputInt = *(int*)message->data;
             CalculateInt();
             break;
         }
@@ -107,32 +115,11 @@ public:
     //processing float 
     void CalculateFloat()
     {
-        outputDouble = inputInt + 1.0;
+        outputDouble = inputDouble + outputDouble;
     }
     //processing int
     void CalculateInt()
     {
-        outputInt = inputInt + 1.0;
-    }
-};
-static class Service
-{
-public:
-    Service(){}
-    Component* VoidToComponent(void* pointer)
-    {
-        return (Component*)pointer;
-    }
-    void TestPointer(void* pField/*, PyObject* pyField, PyObject* pyOb*/)
-    {
-        void* p1 = pField;
-        //void* p2 = (void*)pyField;
-        //void* p3 = (void*)pyOb;
-    }
-    void TestPointerPy(py::object o)
-    {
-        void* p1 = o.;
-        //void* p2 = (void*)pyField;
-        //void* p3 = (void*)pyOb;
+        outputInt = inputInt + outputInt;
     }
 };
