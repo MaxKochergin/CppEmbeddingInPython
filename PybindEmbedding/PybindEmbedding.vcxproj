@@ -145,6 +145,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wModule.cpp" />
+    <ClCompile Include="wrapper.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pyproject.toml" />
+    <None Include="Setup.py" />
   </ItemGroup>
   <ItemGroup>
     <None Include="pyproject.toml" />

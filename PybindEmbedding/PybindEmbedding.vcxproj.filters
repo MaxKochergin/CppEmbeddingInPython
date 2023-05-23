@@ -26,6 +26,13 @@
     <ClCompile Include="wModule.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="wrapper.hpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Setup.py" />
+    <None Include="pyproject.toml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Setup.py" />
