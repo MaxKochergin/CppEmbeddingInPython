@@ -1,61 +1,62 @@
-#based on:
-#https://learn.microsoft.com/ru-ru/visualstudio/python/working-with-c-cpp-python-in-visual-studio?view=vs-2019
-# additional for Pybind:
-# https://www.matecdev.com/posts/cpp-call-from-python.html
-# and
-# https://smyt.ru/blog/sozdaem-s-python-rasshireniya-s-pomshyu-pybind11/
+#https://dearpygui.readthedocs.io/en/latest/documentation/node-editor.html
+import dearpygui.dearpygui as dpg
+import PybindEmbedding as pe
 
-from random import random
-from time import perf_counter
-from CPythonEmbedding import fast_tanh
-from PybindEmbedding import MathCalc
-from NativePythonCalc import *
+class ComponentThumb:
+    def __init__(self, name, inVar, outVar):
+        self.component = pe.Component(name, inVar, outVar)
+        with dpg.node(label=name):
+           with dpg.node_attribute(label="Node A1"):
+                dpg.add_input_float(label="inVar", width=150)
 
-COUNT = 500000  # Change this value depending on the speed of your computer
-DATA = [(random() - 0.5) * 3 for _ in range(COUNT)]
+           with dpg.node_attribute(label="Node A2", attribute_type=dpg.mvNode_Attr_Output):
+                dpg.add_input_float(label="outVar", width=150)
 
-# Testing
-def test(fn, name):
-    start = perf_counter()
-    result = fn(DATA)
-    duration = perf_counter() - start
-    print('{} took {:.3f} seconds\n\n'.format(name, duration))
 
-    for d in result:
-        assert -1 <= d <= 1, " incorrect values"
 
-# Main
-if __name__ == "__main__":
-    import os
-    answer = input('Type 0 if you want to run Tanh calculator or type 1 if you want to run Component messaging.\n>>')
-    match answer:
-        #Tanh calculator
-        case '0':
-            print('Running benchmarks with COUNT = {}'.format(COUNT))
-            #Native
-            test(lambda d: [tanh(x) for x in d], 'Evaluation of tanh 500 000 times (Python native implementation)')
-            #CPython
-            test(lambda d: [fast_tanh(x) for x in d], 'Evaluation of tanh 500 000 times (CPython C++ extension)')
-            #Pybind
-            pbObj = MathCalc()
-            test(lambda d: [pbObj.tanh_impl(x) for x in d], 'Evaluation of tanh 500 000 times] (PyBind11 C++ extension)')
-            os.system("pause")
-    
-        #component test
-        case '1':
-            from PybindEmbedding import Component
+dpg.create_context()
 
-            #Component 1 is sending data
-            component1 = Component('Component 1',0.0,1.0)
-            #Component 2 is receiving and calculating data
-            component2 = Component('Component 2', 0.0,0.0)
- 
-            for i in range(4):
-                #component 1 sends message1 to component2
-                component1.SendMessage(component2,0)
-                print(i,': ' , component1.name, ' at ', id(component1), 'sends message ', component1.outputDouble, ' to ', 
-                      component2.name, ' at ', id(component2), '. Now output 2 is ', component2.outputDouble)
+# callback runs when user attempts to connect attributes
+def link_callback(sender, app_data):
+    # app_data -> (link_id1, link_id2)
+    dpg.add_node_link(app_data[0], app_data[1], parent=sender)
 
-            os.system("pause")
-        case _:
-            print('Wrong choice. Restart and try again.')
+# callback runs when user attempts to disconnect attributes
+def delink_callback(sender, app_data):
+    # app_data -> link_id
+    dpg.delete_item(app_data)
+
+def ModelRun():
+    print('Button was pressed')
+
+with dpg.window(label="Testing DearPyGUI with Pybind11", width=400, height=400):
+    with dpg.menu_bar():
+
+            with dpg.menu(label="Menu"):
+                dpg.add_menu_item(label="Run model", callback=ModelRun)
+    with dpg.node_editor(callback=link_callback, delink_callback=delink_callback):
+        curcuit = []
+        curcuit.append(ComponentThumb('Component 1',0.0,1.0))
+        curcuit.append(ComponentThumb('Component 2',0.0,0.0))
+    ##with dpg.collapsing_header(label="Widgets"):
+    ##    with dpg.group(horizontal=True):
+    ##        dpg.add_button(label="Click", callback=ModelRun)
+        #with dpg.node(label="Node 1"):
+        #    with dpg.node_attribute(label="Node A1"):
+        #        dpg.add_input_float(label="F1", width=150)
+
+        #    with dpg.node_attribute(label="Node A2", attribute_type=dpg.mvNode_Attr_Output):
+        #        dpg.add_input_float(label="F2", width=150)
+
+        #with dpg.node(label="Node 2"):
+        #    with dpg.node_attribute(label="Node A3"):
+        #        dpg.add_input_float(label="F3", width=200)
+
+        #    with dpg.node_attribute(label="Node A4", attribute_type=dpg.mvNode_Attr_Output):
+        #        dpg.add_input_float(label="F4", width=200)
+
+dpg.create_viewport(title='Custom Title', width=800, height=600)
+dpg.setup_dearpygui()
+dpg.show_viewport()
+dpg.start_dearpygui()
+dpg.destroy_context()
