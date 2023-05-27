@@ -82,10 +82,10 @@ def ModelRun(sender, app_data, user_data):
 
 with dpg.window(label="Testing DearPyGUI with Pybind11", width=400, height=400):
     dpg.bind_font(default_font)
-    with dpg.menu_bar():
+    #with dpg.menu_bar():
 
-            with dpg.menu(label="Menu"):
-                dpg.add_menu_item(label="Run model", callback=ModelRun)
+    #        with dpg.menu(label="Menu"):
+    #            dpg.add_menu_item(label="Run model", callback=ModelRun)
     with dpg.node_editor(callback=link_callback, delink_callback=delink_callback) as nodeEditorID:
         print('dpg.node_editor is ', nodeEditorID)
         curcuit = []
@@ -95,6 +95,21 @@ with dpg.window(label="Testing DearPyGUI with Pybind11", width=400, height=400):
         print(f'{NodesList=}')
         print(f'{compLinks=}')
         print(f'{ComponentListNodes=}')
+#added  window for customing theme from
+#https://dearpygui.readthedocs.io/en/latest/documentation/themes.html
+with dpg.theme() as global_theme:
+
+    with dpg.theme_component(dpg.mvAll):
+        dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (255, 140, 23), category=dpg.mvThemeCat_Core)
+        dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 5, category=dpg.mvThemeCat_Core)
+
+    with dpg.theme_component(dpg.mvInputInt):
+        dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (140, 255, 23), category=dpg.mvThemeCat_Core)
+        dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 5, category=dpg.mvThemeCat_Core)
+
+dpg.bind_theme(global_theme)
+
+dpg.show_style_editor()
 with dpg.window():
     dpg.add_button(label='ModelRun', callback=ModelRun,user_data = curcuit)
         ##with dpg.collapsing_header(label="Widgets"):
