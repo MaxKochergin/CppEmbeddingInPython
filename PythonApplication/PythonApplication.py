@@ -8,7 +8,7 @@ global compLinks
 compLinks = []
 global ComponentListNodes
 ComponentListNodes = []
-
+import math
 
 class ComponentThumb:
     #counter of components
@@ -19,6 +19,7 @@ class ComponentThumb:
         #print(f'{ComponentThumb.count=}')
         self.component = pe.Component(name, inVar, outVar)
         with dpg.node(label = name, tag = 'node' + str(ComponentThumb.count)) as self.thumb:
+            #dpg.apply_transform('node' + str(ComponentThumb.count), dpg.create_rotation_matrix(0.15*math.pi, [0, 0, -1]))
             #входной узел слева
             NodesList.append(len(NodesList))
             with dpg.node_attribute(label="Node A1", tag=len(NodesList)) as self.node1:
@@ -80,7 +81,7 @@ def ModelRun(sender, app_data, user_data):
     user_data[0].component.SendMessage(user_data[1].component,0)
     print('Component 2 received message: ', f'{user_data[1].component.outputDouble=}')
 
-with dpg.window(label="Testing DearPyGUI with Pybind11", width=400, height=400):
+with dpg.window(label="Testing DearPyGUI with Pybind11", width=400, height=400, no_scrollbar=False):
     dpg.bind_font(default_font)
     #with dpg.menu_bar():
 
@@ -91,6 +92,7 @@ with dpg.window(label="Testing DearPyGUI with Pybind11", width=400, height=400):
         curcuit = []
         curcuit.append(ComponentThumb('Component 1',0.0,1.0))
         curcuit.append(ComponentThumb('Component 2',0.0,0.0))
+        curcuit.append(ComponentThumb('Component 3',0.0,0.0))
         print(f'{curcuit=}', f'{len(curcuit)=}')
         print(f'{NodesList=}')
         print(f'{compLinks=}')
